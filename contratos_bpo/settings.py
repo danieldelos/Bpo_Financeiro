@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "persons",
+    "list_calendario",
+    "list_contratos",
+    "list_grupos",
+    "list_unidades",
 ]
 
 MIDDLEWARE = [
