@@ -12,14 +12,16 @@ class ContratoView(APIView):
         serializer = ContratoSerializer(data=req.data)
         if not serializer.is_valid():
             return Response(serializer.errors)
-        # Extraia dados dos serializers relacionados e remova-os do contrato
+        # Extrai dados dos serializers relacionados e remove do contrato
         grupo_data = serializer.validated_data.pop("grupo_cliente")
         unidade_data = serializer.validated_data.pop("unidade_centro_de_custo")
         calendario_data = serializer.validated_data.pop("mes_calendario")
-        # Primeiro, crie os registros relacionados e obtenha suas instâncias
-        grupo = Grupo.objects.create(**grupo_data)
-        unidade = Unidade.objects.create(**unidade_data)
-        calendario = Calendario.objects.create(**calendario_data)
+
+        # Verifique se já existe ou crie um novo
+        grupo, _ = Grupo.objects.get_or_create(**grupo_data)
+        unidade, _ = Unidade.objects.get_or_create(**unidade_data)
+        calendario, _ = Calendario.objects.get_or_create(**calendario_data)
+
         # Agora, use essas instâncias ao criar o contrato
         created_contrato = Contrato.objects.create(
             grupo_cliente=grupo,
@@ -29,3 +31,12 @@ class ContratoView(APIView):
         )
         serializer = ContratoSerializer(instance=created_contrato)
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+    def get(self, req: Request) -> Response:
+        contratoAll = Contrato.objects.all()
+        serializer = ContratoSerializer(contratoAll, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+class ContratoDetailView(APIView):
+    def get(self, req: Request, id_contrato) -> Response:
+        ...
