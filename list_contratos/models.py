@@ -41,6 +41,7 @@ class Contrato(models.Model):
         Calendario, on_delete=models.SET_NULL, null=True,
         related_name="contratos"
     )
+    ano = models.IntegerField(null=True, blank=True)
     h_balanco = models.DecimalField(max_digits=10, decimal_places=2)
     dia_vencimento = models.IntegerField()
     pis = models.DecimalField(max_digits=10, decimal_places=2)

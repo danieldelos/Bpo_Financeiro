@@ -5,6 +5,8 @@ from list_contratos.models import Contrato
 from list_contratos.serializers import ContratoSerializer
 from list_grupos.models import Grupo
 from list_unidades.models import Unidade
+import pandas as pd
+from rest_framework.parsers import FileUploadParser
 from django.shortcuts import get_object_or_404
 
 
@@ -28,6 +30,7 @@ class ContratoView(APIView):
             grupo_cliente=grupo,
             unidade_centro_de_custo=unidade,
             mes_calendario=calendario,
+            ano=calendario_data["ano"],
             **serializer.validated_data
         )
         serializer = ContratoSerializer(instance=created_contrato)
@@ -60,3 +63,73 @@ class ContratoDetailView(APIView):
         contrato = get_object_or_404(Contrato, id=id_contrato)
         contrato.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class UploadPlanilhaView(APIView):
+    parser_class = (FileUploadParser,)
+
+    def post(self, request):
+        print(request.data)
+        if 'file' not in request.data:
+            return Response({"error": "No file was provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        file = request.data['file']
+        df = pd.read_excel(file, engine='openpyxl')
+        
+        for _, row in df.iterrows():
+            # Aqui, processe cada linha da planilha e crie/altere os registros no banco de dados
+            # Exemplo: 
+            cliente_contrato = row['cliente_contrato']
+            codigo = row['codigo']
+            cnpj_cpf = row['cnpj_cpf']
+            razao_social = row['razao_social']
+            regime_tributario = row['regime_tributario']
+            contract_status = row['status']
+            us = row['us']
+            h_balanco = row['h_balanco']
+            dia_vencimento = row['dia_vencimento']
+            pis = row['pis']
+            cofins = row['cofins']
+            ir = row['ir']
+            csll = row['csll']
+            inss = row['inss']
+            valor_liquido = row['valor_liquido']
+            email = row['email']
+            grupo_cliente_id = row['grupo_cliente_id']
+            mes_calendario_id = row['mes_calendario_id']
+            unidade_centro_de_custo_id = row['unidade_centro_de_custo_id']
+            observacoes = row['observacoes']
+
+            # ... obtenha todos os outros campos
+
+            # Verifique se já existe ou crie um novo, similar ao que fez anteriormente:
+            grupo = Grupo.objects.get(id=grupo_cliente_id)
+            calendario = Calendario.objects.get(id=mes_calendario_id)
+            unidade = Unidade.objects.get(id=unidade_centro_de_custo_id)
+            # ... e assim por diante para cada modelo
+
+            Contrato.objects.create(
+                cliente_contrato=cliente_contrato,
+                codigo=codigo,
+                cnpj_cpf=cnpj_cpf,
+                razao_social=razao_social,
+                regime_tributario=regime_tributario,
+                status=contract_status,
+                us=us,
+                h_balanco=h_balanco,
+                dia_vencimento=dia_vencimento,
+                pis=pis,
+                cofins=cofins,
+                ir=ir,
+                csll=csll,
+                inss=inss,
+                valor_liquido=valor_liquido,
+                email=email,
+                grupo_cliente=grupo,
+                mes_calendario=calendario,
+                unidade_centro_de_custo=unidade,
+                observacoes=observacoes
+                # ... defina todos os outros campos
+            )
+
+        return Response(status=status.HTTP_201_CREATED)

@@ -19,6 +19,7 @@ class ContratoSerializer(serializers.Serializer):
 
     unidade_centro_de_custo = UnidadeSerializer()
     mes_calendario = CalendarioSerializer()
+    ano = serializers.IntegerField(allow_null=True, required=False)
 
     h_balanco = serializers.DecimalField(max_digits=10, decimal_places=2)
     dia_vencimento = serializers.IntegerField()

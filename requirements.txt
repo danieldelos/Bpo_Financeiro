@@ -7,13 +7,17 @@ colorama==0.4.6
 decorator==5.1.1
 Django==4.2.4
 djangorestframework==3.14.0
+et-xmlfile==1.1.0
 executing==1.2.0
 ipdb==0.13.13
 ipython==8.14.0
 jedi==0.19.0
 matplotlib-inline==0.1.6
 mypy-extensions==1.0.0
+numpy==1.26.1
+openpyxl==3.1.2
 packaging==23.1
+pandas==2.1.1
 parso==0.8.3
 pathspec==0.11.2
 pickleshare==0.7.5
@@ -21,6 +25,7 @@ platformdirs==3.10.0
 prompt-toolkit==3.0.39
 pure-eval==0.2.2
 Pygments==2.16.1
+python-dateutil==2.8.2
 pytz==2023.3
 six==1.16.0
 sqlparse==0.4.4
