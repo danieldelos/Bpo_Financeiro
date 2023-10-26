@@ -50,6 +50,7 @@ class Contrato(models.Model):
     inss = models.DecimalField(max_digits=10, decimal_places=2)
     valor_liquido = models.DecimalField(max_digits=10, decimal_places=2)
     email = models.CharField(max_length=150)
+    observacoes = models.TextField(null=True)
 
     def __repr__(self) -> str:
         return f"<cliente: {self.id} - {self.razao_social}>"

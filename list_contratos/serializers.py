@@ -29,3 +29,4 @@ class ContratoSerializer(serializers.Serializer):
     inss = serializers.DecimalField(max_digits=10, decimal_places=2)
     valor_liquido = serializers.DecimalField(max_digits=10, decimal_places=2)
     email = serializers.CharField(max_length=150)
+    observacoes = serializers.CharField()

@@ -5,6 +5,7 @@ from list_contratos.models import Contrato
 from list_contratos.serializers import ContratoSerializer
 from list_grupos.models import Grupo
 from list_unidades.models import Unidade
+from django.shortcuts import get_object_or_404
 
 
 class ContratoView(APIView):
@@ -37,6 +38,25 @@ class ContratoView(APIView):
         serializer = ContratoSerializer(contratoAll, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
+
 class ContratoDetailView(APIView):
-    def get(self, req: Request, id_contrato) -> Response:
-        ...
+    def get(self, req: Request, id_contrato: int) -> Response:
+        contrato = get_object_or_404(Contrato, id=id_contrato)
+        serializer = ContratoSerializer(contrato)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    def patch(self, req: Request, id_contrato: int) -> Response:
+        contrato = get_object_or_404(Contrato, id=id_contrato)
+        serializer = ContratoSerializer(data=req.data, partial=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        for key, value in serializer.validated_data.items():
+            setattr(contrato, key, value)
+        contrato.save()
+        serializer = ContratoSerializer(contrato)
+        return Response(serializer.data)
+
+    def delete(self, req: Request, id_contrato: int) -> Response:
+        contrato = get_object_or_404(Contrato, id=id_contrato)
+        contrato.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
